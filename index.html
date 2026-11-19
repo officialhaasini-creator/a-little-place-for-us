@@ -1,0 +1,740 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Little Place For US ♡</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#100d10;color:#f0dce0;font-family:Georgia,serif;min-height:100vh}
+button{cursor:pointer;font-family:inherit}
+button:focus-visible{outline:2px solid #d9a5b3;outline-offset:4px}
+#login{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;text-align:center}
+.container{width:100%;max-width:430px;padding:42px 25px;background:#1c151a;border:1px solid #60404b;border-radius:18px;box-shadow:0 0 35px #4a202e55}
+.heart{color:#c58c9b;font-size:42px;margin-bottom:15px}
+h1{font-size:38px;font-weight:normal;line-height:1.3;color:#e8c5cc}
+p{color:#bba5ab;line-height:1.8}
+input{width:100%;padding:14px;margin:22px 0 13px;background:#100d10;border:1px solid #60404b;border-radius:8px;color:white;text-align:center}
+.main-btn{padding:14px 25px;background:#713c50;color:white;border:none;border-radius:8px;transition:.3s}
+.main-btn:hover{background:#92556b}
+#error{color:#e99aaa;font-size:13px;margin-top:12px}
+#home{display:none;min-height:100vh;padding:25px}
+header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #49313a;padding-bottom:18px}
+.logo{color:#d5a3af;letter-spacing:3px;font-size:12px}
+.hero{text-align:center;padding:85px 15px 65px}
+.eyebrow{color:#c58c9b;letter-spacing:4px;font-size:11px;margin-bottom:18px}
+.hero h1{font-size:clamp(40px,7vw,65px);margin-bottom:18px}
+.hero p{margin-bottom:12px}
+.section-title{text-align:center;color:#e8c5cc;font-size:26px;font-weight:normal;margin:35px 0 25px}
+.grid{max-width:850px;margin:30px auto;display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.card{background:#21171d;border:1px solid #50323e;border-radius:13px;padding:25px 15px;text-align:center;cursor:pointer;transition:.3s}
+.card:hover{transform:translateY(-5px);background:#35202a;border-color:#b77b8d}
+.card span{font-size:30px}
+.card h3{color:#e8c5cc;font-weight:normal;margin:12px 0}
+.card p{font-size:12px}
+.page-section{display:none;max-width:850px;margin:auto;padding:30px 18px}
+.back-btn{background:transparent;border:1px solid #60404b;color:#d9aeb9;padding:10px 18px;border-radius:8px;margin-bottom:30px}
+.page-heading{text-align:center;padding:25px 10px}
+.page-heading h1{font-size:clamp(30px,6vw,45px);margin-bottom:15px}
+.letter-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin:30px 0}
+.envelope{background:#281a22;border:1px solid #795060;border-radius:14px;padding:30px 12px;text-align:center;cursor:pointer;transition:.3s}
+.envelope:hover{transform:translateY(-5px);background:#39232e}
+.envelope .emoji{font-size:38px}
+.envelope h3{color:#e8c5cc;font-weight:normal;margin:15px 0 8px}
+.envelope p{font-size:12px}
+#letterPopup{display:none;position:fixed;inset:0;background:#000000dd;justify-content:center;align-items:center;padding:20px;z-index:10}
+.letter-paper{width:100%;max-width:480px;background:#f0dce0;color:#432630;border-radius:12px;padding:35px 25px;text-align:center;max-height:85vh;overflow-y:auto}
+.letter-paper h2{color:#713c50;font-weight:normal;margin-bottom:20px}
+.letter-paper p{color:#60404b;line-height:1.9;white-space:pre-line;text-align:left}
+.close-btn{margin-top:25px;padding:11px 22px;border:none;background:#713c50;color:white;border-radius:7px}
+.quiz-box{max-width:600px;margin:15px auto 40px;background:#1c151a;border:1px solid #60404b;border-radius:18px;padding:28px 22px}
+.quiz-top{display:flex;justify-content:space-between;color:#c58c9b;font-size:13px;margin-bottom:15px}
+.progress-bg{width:100%;height:7px;background:#39252e;border-radius:20px;overflow:hidden;margin-bottom:30px}
+#progress{height:100%;width:0%;background:#c58c9b;transition:width .3s}
+#question{text-align:center;font-size:24px;font-weight:normal;line-height:1.5;color:#e8c5cc;margin-bottom:25px}
+.answers{display:grid;gap:12px}
+.answer-btn{width:100%;padding:15px;border:1px solid #60404b;background:#281a22;color:#e8c5cc;border-radius:9px;font-size:15px;transition:.2s}
+.answer-btn:hover:not(:disabled){background:#543040}
+.answer-btn:disabled{cursor:default;opacity:.85}
+.answer-btn.correct{border-color:#75ad8a;background:#24382e}
+.answer-btn.wrong{border-color:#bd7885;background:#48232c}
+#feedback{text-align:center;min-height:55px;padding:18px 5px 5px;color:#d5a3af;line-height:1.6}
+#nextBtn{display:none;margin:18px auto 0}
+#quizResult{display:none;text-align:center;padding:25px 10px}
+#quizResult h2{color:#e8c5cc;font-size:30px;font-weight:normal;margin:18px 0}
+#quizResult p{margin:15px 0}
+footer{text-align:center;padding:50px 10px 20px;color:#967b83;font-size:12px}
+
+/* SURPRISE - CHOOSE YOUR FATE */
+.fate-intro{max-width:620px;margin:0 auto 28px;text-align:center}
+.fate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:35px auto;max-width:700px}
+.fate-door{min-height:210px;background:linear-gradient(145deg,#482637,#21171d);border:1px solid #9a6577;border-radius:16px;padding:20px 12px;color:#f0dce0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:.25s}
+.fate-door:hover{transform:translateY(-7px);background:linear-gradient(145deg,#633348,#2b1b23);box-shadow:0 10px 25px #0005}
+.fate-door .door-icon{font-size:48px}
+.fate-door strong{font-weight:normal;color:#f0c6d1;font-size:17px}
+.fate-door small{color:#c6aab2}
+.fate-result{display:none;max-width:600px;margin:20px auto;padding:30px 22px;text-align:center;background:#281a22;border:1px solid #9a6577;border-radius:16px}
+.fate-result .result-emoji{font-size:48px;margin-bottom:15px}
+.fate-result h2{color:#e8c5cc;font-weight:normal;margin-bottom:15px}
+.fate-result p{line-height:1.9}
+.fate-again{margin-top:20px}
+.fate-note{text-align:center;color:#c58c9b;margin:20px 0}
+
+/* COUNTDOWN */
+.countdown-wrap{max-width:700px;margin:30px auto;text-align:center}
+.countdown-message{font-size:18px;color:#d5a3af;margin:20px 0}
+.countdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:35px 0}
+.time-box{background:#281a22;border:1px solid #795060;border-radius:13px;padding:22px 8px}
+.time-box strong{display:block;color:#e8c5cc;font-size:clamp(25px,5vw,42px);font-weight:normal}
+.time-box span{display:block;color:#c58c9b;font-size:11px;letter-spacing:2px;margin-top:8px}
+.wedding-date{color:#e8c5cc;font-size:19px;margin:25px 0}
+.countdown-heart{font-size:42px;color:#c58c9b;margin:20px}
+
+/* 100 REASONS */
+.reasons-intro{max-width:650px;margin:0 auto 25px;text-align:center}
+.reasons-progress-wrap{max-width:650px;margin:25px auto}
+.reasons-progress-label{display:flex;justify-content:space-between;color:#c58c9b;font-size:13px;margin-bottom:9px}
+.reasons-progress-bg{width:100%;height:8px;background:#39252e;border-radius:20px;overflow:hidden}
+#reasonsProgress{width:0%;height:100%;background:#c58c9b;transition:width .3s ease}
+.reasons-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:25px 0 40px}
+.reason-card{background:#21171d;border:1px solid #50323e;border-radius:12px;padding:17px 15px;min-height:88px;display:flex;align-items:center;gap:13px;text-align:left;color:#f0dce0;transition:.2s ease}
+.reason-card:hover{transform:translateY(-3px);background:#35202a;border-color:#b77b8d}
+.reason-number{color:#c58c9b;font-size:13px;min-width:27px}
+.reason-text{line-height:1.6;font-size:14px}
+.reasons-note{text-align:center;color:#c58c9b;margin:25px 0}
+
+@media(max-width:600px){
+ .fate-grid{grid-template-columns:1fr;max-width:350px}
+ .fate-door{min-height:150px}
+ .countdown-grid{gap:7px}
+ .time-box{padding:18px 4px}
+ .time-box span{font-size:9px;letter-spacing:1px}
+ .reasons-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+ #home{padding:18px}
+ .grid,.letter-grid{gap:10px}
+ .card{padding:20px 8px}
+ .envelope{padding:25px 8px}
+ .quiz-box{padding:22px 15px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- PASSWORD PAGE -->
+<div id="login">
+ <div class="container">
+  <div class="heart">♡</div>
+  <h1>A Little Place<br>For US.</h1>
+  <p>Two people. Countless memories.<br>One little universe.</p>
+  <input type="password" id="password" placeholder="Enter our secret password">
+  <button class="main-btn" onclick="unlock()">Unlock Our World ♡</button>
+  <p id="error"></p>
+ </div>
+</div>
+
+<!-- HOMEPAGE -->
+<div id="home">
+ <header>
+  <div class="logo">A LITTLE PLACE FOR US</div>
+  <div style="color:#c58c9b;">♡</div>
+ </header>
+
+ <section class="hero">
+  <div class="eyebrow">A PRIVATE LITTLE WORLD</div>
+  <h1>Welcome,<br>My Bie. ♡</h1>
+  <p>I made this little place just for you.<br>A collection of feelings, fun and us.</p>
+  <p style="color:#c58c9b;">Made with love, just for you.</p>
+ </section>
+
+ <h2 class="section-title">Explore Our Little World</h2>
+
+ <div class="grid">
+  <div class="card" onclick="showLetters()">
+   <span>💌</span><h3>Love Letters</h3><p>Words from my heart to yours.</p>
+  </div>
+  <div class="card" onclick="startQuiz()">
+   <span>🎮</span><h3>The Bie Challenge</h3><p>Funny questions. No escaping!</p>
+  </div>
+  <div class="card" onclick="showGift()">
+   <span>🎁</span><h3>Surprise Gift</h3><p>Choose your fate, Bie!</p>
+  </div>
+  <div class="card" onclick="showReasons()">
+   <span>❤️</span><h3>100 Reasons</h3><p>Why you mean so much to me.</p>
+  </div>
+  <div class="card" onclick="showCountdown()">
+   <span>⏳</span><h3>Our Countdown</h3><p>Counting down to our special day.</p>
+  </div>
+ </div>
+
+ <footer>Wherever life takes us, here's a little place for us. ♡<br><br>MADE WITH LOVE © 2026</footer>
+</div>
+
+<!-- LOVE LETTERS -->
+<div id="letters" class="page-section">
+ <button class="back-btn" onclick="goHome('letters')">← Back to our world</button>
+ <div class="page-heading">
+  <div class="heart">💌</div>
+  <h1>Letters For My Bie</h1>
+  <p>Some feelings are easier to write than to say.<br>So, I left a few words here for you.</p>
+ </div>
+ <div class="letter-grid">
+  <div class="envelope" onclick="openLetter(0)"><div class="emoji">💌</div><h3>Just For You</h3><p>A little message from me</p></div>
+  <div class="envelope" onclick="openLetter(1)"><div class="emoji">❤️</div><h3>When You Miss Me</h3><p>Read this whenever you need me</p></div>
+  <div class="envelope" onclick="openLetter(2)"><div class="emoji">🌙</div><h3>Before You Sleep</h3><p>A little goodnight message</p></div>
+  <div class="envelope" onclick="openLetter(3)"><div class="emoji">🥺</div><h3>A Little Reminder</h3><p>Something I want you to remember</p></div>
+  <div class="envelope" onclick="openLetter(4)"><div class="emoji">😘</div><h3>When You're Annoying</h3><p>Yes, this one is for you!</p></div>
+  <div class="envelope" onclick="openLetter(5)"><div class="emoji">💗</div><h3>One Last Thing</h3><p>A message straight from my heart</p></div>
+ </div>
+</div>
+
+<!-- LETTER POPUP -->
+<div id="letterPopup">
+ <div class="letter-paper">
+  <div style="font-size:35px;">♡</div>
+  <h2 id="letterTitle"></h2>
+  <p id="letterMessage"></p>
+  <button class="close-btn" onclick="closeLetter()">Close Letter ♡</button>
+ </div>
+</div>
+
+<!-- SURPRISE: CHOOSE YOUR FATE -->
+<div id="gift" class="page-section">
+ <button class="back-btn" onclick="goHome('gift')">← Back to our world</button>
+ <div class="page-heading">
+  <div class="heart">🎲</div>
+  <h1>Choose Your Fate, Bie!</h1>
+  <p>Three doors. Three surprises.<br>Choose wisely... or don't. 😂</p>
+ </div>
+
+ <div class="fate-intro">
+  <p>Behind every door is a surprise waiting for you.<br>You only get to choose one first. No changing your mind! 🤭</p>
+ </div>
+
+ <div class="fate-grid" id="fateGrid">
+  <button class="fate-door" onclick="chooseFate(0)">
+   <span class="door-icon">🚪</span>
+   <strong>Door Number 1</strong>
+   <small>What's behind it?</small>
+  </button>
+  <button class="fate-door" onclick="chooseFate(1)">
+   <span class="door-icon">🚪</span>
+   <strong>Door Number 2</strong>
+   <small>Feeling lucky?</small>
+  </button>
+  <button class="fate-door" onclick="chooseFate(2)">
+   <span class="door-icon">🚪</span>
+   <strong>Door Number 3</strong>
+   <small>Be brave, Bie!</small>
+  </button>
+ </div>
+
+ <div class="fate-result" id="fateResult">
+  <div class="result-emoji" id="fateEmoji"></div>
+  <h2 id="fateTitle"></h2>
+  <p id="fateMessage"></p>
+  <button class="main-btn fate-again" onclick="resetFate()">Choose another door 😂</button>
+ </div>
+
+ <p class="fate-note">Warning: Results may include excessive cuteness. ♡</p>
+</div>
+
+<!-- COUNTDOWN -->
+<div id="countdown" class="page-section">
+ <button class="back-btn" onclick="goHome('countdown')">← Back to our world</button>
+ <div class="page-heading">
+  <div class="heart">💍</div>
+  <h1>Until Our Forever Begins</h1>
+  <p>One special date. One beautiful dream.<br>Our wedding year: 2031. ♡</p>
+ </div>
+
+ <div class="countdown-wrap">
+  <div class="countdown-heart">♡</div>
+  <p class="countdown-message">Every second brings us closer to our special day.</p>
+
+  <div class="countdown-grid">
+   <div class="time-box"><strong id="days">0</strong><span>DAYS</span></div>
+   <div class="time-box"><strong id="hours">00</strong><span>HOURS</span></div>
+   <div class="time-box"><strong id="minutes">00</strong><span>MINUTES</span></div>
+   <div class="time-box"><strong id="seconds">00</strong><span>SECONDS</span></div>
+  </div>
+
+  <p class="wedding-date">01 · 01 · 2031</p>
+  <p>Until then, let's keep growing, laughing and making our little story beautiful. ❤️</p>
+ </div>
+</div>
+
+<!-- 100 REASONS -->
+<div id="reasons" class="page-section">
+ <button class="back-btn" onclick="goHome('reasons')">← Back to our world</button>
+ <div class="page-heading">
+  <div class="heart">❤️</div>
+  <h1>100 Reasons I Love You</h1>
+  <p>I could probably write a thousand,<br>but here are 100 little reasons to start. ♡</p>
+ </div>
+ <div class="reasons-intro">
+  <p>Tap any reason to mark it as read.<br>Take your time, Bie. No speed-running this one! 😂</p>
+ </div>
+ <div class="reasons-progress-wrap">
+  <div class="reasons-progress-label"><span>Reasons discovered</span><span id="reasonsCount">0 / 100</span></div>
+  <div class="reasons-progress-bg"><div id="reasonsProgress"></div></div>
+ </div>
+ <div class="reasons-grid" id="reasonsGrid"></div>
+ <p class="reasons-note" id="reasonsFinish">100 little reasons. And still, there's so much more. ♡</p>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="page-section">
+ <button class="back-btn" onclick="goHome('quiz')">← Back to our world</button>
+ <div class="page-heading">
+  <div class="heart">🎮</div>
+  <h1>The Bie Challenge</h1>
+  <p>Let's see how well you know us!<br>Don't disappoint me, Bie. 😂</p>
+ </div>
+
+ <div class="quiz-box">
+  <div id="quizGame">
+   <div class="quiz-top"><span id="questionCount">Question 1 / 10</span><span id="score">Score: 0</span></div>
+   <div class="progress-bg"><div id="progress"></div></div>
+   <h2 id="question"></h2>
+   <div class="answers" id="answers"></div>
+   <div id="feedback" aria-live="polite"></div>
+   <button id="nextBtn" class="main-btn" onclick="nextQuestion()">Next Question →</button>
+  </div>
+
+  <div id="quizResult">
+   <div style="font-size:55px;">💗</div>
+   <h2>Quiz Completed, Bie!</h2>
+   <h1 id="finalScore"></h1>
+   <p id="resultMessage"></p>
+   <p>But honestly, you don't need a perfect score to be my favourite person. ♡</p>
+   <button class="main-btn" onclick="startQuiz()">Play Again ♡</button>
+   <br><br>
+   <button class="back-btn" onclick="goHome('quiz')">Back to our world</button>
+  </div>
+ </div>
+</div>
+
+<script>
+// PASSWORD
+const secretPassword = "oursecret123";
+
+function unlock(){
+ const entered=document.getElementById("password").value;
+ if(entered===secretPassword){
+  document.getElementById("login").style.display="none";
+  document.getElementById("home").style.display="block";
+ }else{
+  document.getElementById("error").textContent="Oops! Try again, Bie ♡";
+ }
+}
+
+document.getElementById("password").addEventListener("keydown",function(e){
+ if(e.key==="Enter")unlock();
+});
+
+// NAVIGATION
+function goHome(section){
+ document.getElementById(section).style.display="none";
+ document.getElementById("home").style.display="block";
+ window.scrollTo(0,0);
+}
+
+// LOVE LETTERS
+const letters=[
+ {title:"Just For You ♡",message:`Hey Bie,
+
+I don't always know how to put my feelings into words, but I hope this little website reminds you how special you are to me.
+
+I made this little corner of the internet just for us. Every page has a little piece of my heart.
+
+Thank you for being part of my life.
+
+With love,
+Your favourite person ♡`},
+ {title:"When You Miss Me ❤️",message:`Hey Bie,
+
+If you're reading this because you miss me, just remember that you're someone very special in my life.
+
+No matter how busy our days get, I hope you always know that you have someone who thinks about you.
+
+Sending you a little virtual kiss.
+
+Miss me a little extra! ♡`},
+ {title:"Before You Sleep 🌙",message:`Goodnight, Bie.
+
+I hope today treated you well.
+
+Whatever happened today, leave the stress behind and get some proper rest.
+
+Tomorrow is another day, and I hope it brings you lots of happiness.
+
+Sleep well, my favourite human.
+
+Sweet dreams! ♡`},
+ {title:"A Little Reminder 🥺",message:`Bie,
+
+I want you to remember that you matter.
+
+Your dreams matter. Your happiness matters. And I hope you never forget how much potential you have.
+
+I'm proud of you, even for the little things that you sometimes don't notice yourself.
+
+Keep going. ♡`},
+ {title:"When You're Annoying 😘",message:`Excuse me, Bie!
+
+Sometimes you're seriously annoying.
+
+Sometimes I don't understand you.
+
+Sometimes you test my patience.
+
+BUT...
+
+Unfortunately for you, you're still my favourite person.
+
+So don't get too comfortable! 😂❤️`},
+ {title:"One Last Thing 💗",message:`Hey Bie,
+
+If there's one thing I want you to take away from this little website, it's this:
+
+You are appreciated.
+
+I hope we continue creating beautiful memories, laughing at silly things and supporting each other through life.
+
+Thank you for being you.
+
+Here's to our little world. ♡`}
+];
+
+function showLetters(){
+ document.getElementById("home").style.display="none";
+ document.getElementById("letters").style.display="block";
+ window.scrollTo(0,0);
+}
+function openLetter(index){
+ document.getElementById("letterTitle").textContent=letters[index].title;
+ document.getElementById("letterMessage").textContent=letters[index].message;
+ document.getElementById("letterPopup").style.display="flex";
+}
+function closeLetter(){
+ document.getElementById("letterPopup").style.display="none";
+}
+
+// QUIZ
+const questions=[
+ {q:"Who gets annoyed faster? 😂",a:["Me, obviously!","Bie, no doubt!","Both of us!","Depends on the day!"],correct:2,fun:"So we both have a little attitude? Interesting! 😂"},
+ {q:"Who is more stubborn? 😏",a:["Me","Bie","Both equally stubborn","Neither of us (sure!)"],correct:2,fun:"Two stubborn people. What could possibly go wrong? 😂"},
+ {q:"Who is more likely to say sorry first?",a:["Me","Bie","Whoever wants peace first!","We wait for the other person!"],correct:2,fun:"Peace negotiations are officially open! ❤️"},
+ {q:"Who is more clingy? 🥺",a:["Me","Bie","Both of us","We pretend not to be!"],correct:2,fun:"A little clinginess never hurt anyone! 🤭"},
+ {q:"Who starts random arguments?",a:["Me, innocent as always!","Bie, definitely!","Both of us!","The arguments just appear!"],correct:2,fun:"The blame game continues! 😂"},
+ {q:"Who is more dramatic?",a:["Me, the main character!","Bie, the drama king!","Both deserve awards!","Neither, we're angels!"],correct:2,fun:"Someone please give these two an acting award! 🏆"},
+ {q:"Who misses the other person more?",a:["Me, obviously!","Bie, secretly!","Both of us","We both deny it!"],correct:2,fun:"Caught being soft for each other! ❤️"},
+ {q:"Who is more likely to plan a surprise?",a:["Me","Bie","Both of us","Nobody, we love surprises but never plan them!"],correct:2,fun:"Surprise planning committee, please report! 🎁"},
+ {q:"Who wins an argument?",a:["Me, always!","Bie, apparently!","Nobody wins!","Whoever gets the last word!"],correct:2,fun:"The real winner is whoever gets snacks afterwards! 😂"},
+ {q:"Who is secretly more romantic? ❤️",a:["Me","Bie","Both of us","We're both secretly soft!"],correct:2,fun:"Aww, look at you two pretending to be tough! 🥹"}
+];
+
+let currentQuestion=0,totalScore=0,answered=false;
+
+function startQuiz(){
+ currentQuestion=0;totalScore=0;
+ document.getElementById("home").style.display="none";
+ document.getElementById("letters").style.display="none";
+ document.getElementById("quiz").style.display="block";
+ document.getElementById("quizGame").style.display="block";
+ document.getElementById("quizResult").style.display="none";
+ window.scrollTo(0,0);
+ showQuestion();
+}
+
+function showQuestion(){
+ answered=false;
+ const item=questions[currentQuestion];
+ document.getElementById("questionCount").textContent="Question "+(currentQuestion+1)+" / "+questions.length;
+ document.getElementById("score").textContent="Score: "+totalScore;
+ document.getElementById("progress").style.width=(currentQuestion/questions.length*100)+"%";
+ document.getElementById("question").textContent=item.q;
+ document.getElementById("feedback").textContent="";
+ document.getElementById("nextBtn").style.display="none";
+ const area=document.getElementById("answers");
+ area.innerHTML="";
+ item.a.forEach((answer,index)=>{
+  const btn=document.createElement("button");
+  btn.className="answer-btn";
+  btn.textContent=answer;
+  btn.onclick=()=>chooseAnswer(index);
+  area.appendChild(btn);
+ });
+}
+
+function chooseAnswer(index){
+ if(answered)return;
+ answered=true;
+ const item=questions[currentQuestion];
+ const buttons=document.querySelectorAll(".answer-btn");
+ buttons.forEach((btn,i)=>{
+  btn.disabled=true;
+  if(i===item.correct)btn.classList.add("correct");
+  if(i===index&&index!==item.correct)btn.classList.add("wrong");
+ });
+ if(index===item.correct){
+  totalScore++;
+  document.getElementById("feedback").textContent="Correct! "+item.fun;
+ }else{
+  document.getElementById("feedback").textContent="Oops! Not quite! "+item.fun;
+ }
+ document.getElementById("score").textContent="Score: "+totalScore;
+ document.getElementById("nextBtn").textContent=currentQuestion===questions.length-1?"See My Result ♡":"Next Question →";
+ document.getElementById("nextBtn").style.display="block";
+}
+
+function nextQuestion(){
+ currentQuestion++;
+ if(currentQuestion<questions.length)showQuestion();
+ else showResult();
+}
+
+function showResult(){
+ document.getElementById("quizGame").style.display="none";
+ document.getElementById("quizResult").style.display="block";
+ document.getElementById("progress").style.width="100%";
+ document.getElementById("finalScore").textContent=totalScore+" / "+questions.length;
+ let message="";
+ if(totalScore===10)message="WOW Bie! Full marks! You know us so well. Don't let this confidence get to your head! 😂❤️";
+ else if(totalScore>=7)message="Not bad, Bie! You clearly know a lot about us. I'll give you a little kiss for that! 😘";
+ else if(totalScore>=4)message="Hmm Bie, we need more revision classes! Your favourite person is waiting for you to pay attention! 😂💗";
+ else message="EXCUSE ME, BIE?! 😂 Looks like you need to spend more time getting to know your favourite person. Luckily, I still like you! ❤️";
+ document.getElementById("resultMessage").textContent=message;
+}
+
+// SURPRISE: CHOOSE YOUR FATE
+const fates=[
+ {emoji:"😂",title:"YOUR FATE: OFFICIAL TROUBLEMAKER",message:"Congratulations, Bie! You've been selected as the official troublemaker of this relationship. Your daily responsibilities include making me laugh, tolerating my nonsense and accepting that I am sometimes right. No appeals allowed. 😂"},
+ {emoji:"💗",title:"YOUR FATE: UNLIMITED COMPLIMENTS",message:"Surprise! You have unlocked unlimited compliments. Today's first one: you're genuinely special to me. Your second one: you're lucky to have someone who made this entire website for you. Your third one: don't get too proud now! 🤭❤️"},
+ {emoji:"🎮",title:"YOUR FATE: A MINI CHALLENGE",message:"Your challenge is to send me three things: one funny joke, one sweet message and one reason why I make you smile. You have officially been assigned homework, Bie. No skipping! 😂"}
+];
+
+function showGift(){
+ document.getElementById("home").style.display="none";
+ document.getElementById("gift").style.display="block";
+ window.scrollTo(0,0);
+}
+
+function chooseFate(index){
+ const result=fates[index];
+ document.getElementById("fateGrid").style.display="none";
+ document.getElementById("fateEmoji").textContent=result.emoji;
+ document.getElementById("fateTitle").textContent=result.title;
+ document.getElementById("fateMessage").textContent=result.message;
+ document.getElementById("fateResult").style.display="block";
+ window.scrollTo(0,0);
+}
+
+function resetFate(){
+ document.getElementById("fateResult").style.display="none";
+ document.getElementById("fateGrid").style.display="grid";
+}
+
+// COUNTDOWN TO 1 JANUARY 2031
+let countdownTimer=null;
+const weddingDate=new Date(2031,0,1,0,0,0);
+
+function showCountdown(){
+ document.getElementById("home").style.display="none";
+ document.getElementById("countdown").style.display="block";
+ updateCountdown();
+ if(countdownTimer)clearInterval(countdownTimer);
+ countdownTimer=setInterval(updateCountdown,1000);
+ window.scrollTo(0,0);
+}
+
+function updateCountdown(){
+ const now=new Date();
+ let difference=weddingDate-now;
+
+ if(difference<=0){
+  document.getElementById("days").textContent="0";
+  document.getElementById("hours").textContent="00";
+  document.getElementById("minutes").textContent="00";
+  document.getElementById("seconds").textContent="00";
+  return;
+ }
+
+ const days=Math.floor(difference/(1000*60*60*24));
+ difference%=1000*60*60*24;
+ const hours=Math.floor(difference/(1000*60*60));
+ difference%=1000*60*60;
+ const minutes=Math.floor(difference/(1000*60));
+ difference%=1000*60;
+ const seconds=Math.floor(difference/1000);
+
+ document.getElementById("days").textContent=days;
+ document.getElementById("hours").textContent=String(hours).padStart(2,"0");
+ document.getElementById("minutes").textContent=String(minutes).padStart(2,"0");
+ document.getElementById("seconds").textContent=String(seconds).padStart(2,"0");
+}
+
+// 100 REASONS
+const reasons=[
+"You make ordinary days feel a little more special.",
+"You can make me laugh when I least expect it.",
+"I can be myself around you.",
+"You listen to the little things I tell you.",
+"You remember details that matter to me.",
+"Your happiness matters to me.",
+"You encourage me to keep going.",
+"You make even simple conversations enjoyable.",
+"You have your own way of making me smile.",
+"You are one of my favourite people to talk to.",
+"You make me feel appreciated.",
+"You share your silly side with me.",
+"You make boring moments less boring.",
+"You have a way of cheering me up.",
+"I enjoy learning new things about you.",
+"You make me look forward to our conversations.",
+"You can be funny without even trying.",
+"You let me share my random thoughts.",
+"You make little moments worth remembering.",
+"You are someone I can celebrate good news with.",
+"You make me feel heard.",
+"You have dreams that I want to see you achieve.",
+"I admire the way you keep trying.",
+"You bring a different kind of happiness into my life.",
+"You make me smile at my phone sometimes.",
+"You are thoughtful in your own way.",
+"You make our inside jokes even funnier.",
+"You can turn a normal day into a good one.",
+"I like hearing about how your day went.",
+"You make me feel lucky to know you.",
+"You are someone I want to support.",
+"You make me curious about what the future holds.",
+"You have little habits that make you uniquely you.",
+"I enjoy spending time with you, even doing nothing.",
+"You make me laugh at things nobody else would understand.",
+"You are important to me.",
+"You make me feel included in your world.",
+"You trust me with your thoughts.",
+"You give me reasons to be excited about tomorrow.",
+"You make simple plans feel exciting.",
+"I like the way we can joke around.",
+"You make me feel comfortable being honest.",
+"You have a kind side that I appreciate.",
+"You make me want to be more thoughtful.",
+"You are full of little surprises.",
+"You make me feel like my words matter.",
+"I enjoy discovering your favourite things.",
+"You make even a short chat feel meaningful.",
+"You are my favourite notification sometimes.",
+"You make me laugh even when I try to act serious.",
+"You have a personality I never get bored of.",
+"You make me feel supported.",
+"You make me proud when you work towards your goals.",
+"You are not afraid to be a little silly.",
+"You make our memories special.",
+"You make me appreciate the small things.",
+"I like hearing your opinions, even when we disagree.",
+"You make me feel understood.",
+"You bring out my playful side.",
+"You make me smile without knowing it.",
+"You are someone I want to make time for.",
+"You make ordinary conversations unforgettable.",
+"You have a laugh I enjoy hearing.",
+"You make me feel valued.",
+"You are always interesting to get to know.",
+"You make me want to celebrate your wins.",
+"You remind me that happiness can be found in small moments.",
+"You make me feel comfortable sharing my thoughts.",
+"You make me laugh with your random jokes.",
+"You have your own special place in my life.",
+"You make me excited for our next conversation.",
+"You are someone I can be playful with.",
+"You make the distance or busy days feel a little easier.",
+"You inspire me with your determination.",
+"You make me want to create more happy memories.",
+"You are worth cheering for.",
+"You make me feel grateful for the little things.",
+"You make me laugh even when you're being annoying.",
+"You have a way of making things feel lighter.",
+"You let me see different sides of you.",
+"You make me feel special in your own way.",
+"You are someone I genuinely care about.",
+"You make me want to learn and grow.",
+"You make our little world feel like ours.",
+"You are fun to tease and joke with.",
+"You make me happy just by being you.",
+"You give me stories that make me smile later.",
+"You are someone I want to see succeed.",
+"You make me feel lucky to share little moments with you.",
+"You make me appreciate what we have.",
+"You are patient with me in your own way.",
+"You make me laugh at the most unexpected times.",
+"You make even quiet moments feel nice.",
+"You are someone I can look forward to seeing.",
+"You make me feel cared for.",
+"You make me want to keep choosing kindness.",
+"You are my favourite kind of unexpected happiness.",
+"You make life feel a little more colourful.",
+"You are you, and that is a reason all by itself.",
+"And the biggest reason: because you're my Bie. ♡"
+];
+
+let reasonsOpened=new Set();
+
+function showReasons(){
+ document.getElementById("home").style.display="none";
+ document.getElementById("letters").style.display="none";
+ document.getElementById("quiz").style.display="none";
+ document.getElementById("gift").style.display="none";
+ document.getElementById("countdown").style.display="none";
+ document.getElementById("reasons").style.display="block";
+ if(document.getElementById("reasonsGrid").children.length===0)buildReasons();
+ window.scrollTo(0,0);
+}
+
+function buildReasons(){
+ const grid=document.getElementById("reasonsGrid");
+ grid.innerHTML="";
+ reasons.forEach((reason,index)=>{
+  const card=document.createElement("button");
+  card.type="button";
+  card.className="reason-card";
+  card.setAttribute("aria-pressed","false");
+  const number=document.createElement("span");
+  number.className="reason-number";
+  number.textContent=String(index+1).padStart(2,"0");
+  const text=document.createElement("span");
+  text.className="reason-text";
+  text.textContent=reason;
+  card.appendChild(number);
+  card.appendChild(text);
+  card.addEventListener("click",()=>{
+   if(!reasonsOpened.has(index)){
+    reasonsOpened.add(index);
+    card.style.borderColor="#c58c9b";
+    card.style.background="#35202a";
+    card.setAttribute("aria-pressed","true");
+    updateReasonsProgress();
+   }
+  });
+  grid.appendChild(card);
+ });
+ updateReasonsProgress();
+}
+
+function updateReasonsProgress(){
+ const count=reasonsOpened.size;
+ document.getElementById("reasonsCount").textContent=count+" / 100";
+ document.getElementById("reasonsProgress").style.width=count+"%";
+ if(count===100){
+  document.getElementById("reasonsFinish").textContent="You found all 100! But honestly, Bie, I could think of a million more. ♡";
+ }
+}
+</script>
+
+</body>
+</html>
